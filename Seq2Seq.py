@@ -28,31 +28,17 @@ class Seq2Seq(nn.Module):
                                dropout=dropout)
         
         
-    def forward(self, inputs, targets, tf_ratio=0.5):
+    def forward(self, inputs, speakers, tags, targets, tf_ratio=0.5):
         ''' inputs:  [b, input_seq_len(200)]
             targets: [b, input_seq_len(200)]'''
             
         ###########################  1. ENCODER  ##############################
         h = self.encoder.init_hidden(inputs.size(0))
         #h = tuple([each.data for each in h])
-        last_layer_enc, last_h_enc = self.encoder(inputs, h)
+        last_layer_enc, last_h_enc = self.encoder(inputs, speakers, tags, h)
         
         trg_seq_len = targets.size(1)
         
-        
-        '''
-        outputs = torch.zeros(max_len, batch_size, trg_vocab_size).to(self.device)
-        output = trg[0,:]
-        
-        for t in range(1, max_len):
-            output, hidden = self.decoder(output, hidden, encoder_outputs)
-            outputs[t] = output
-            teacher_force = random.random() < teacher_forcing_ratio
-            top1 = output.max(1)[1]
-            output = (trg[t] if teacher_force else top1)
-        '''    
-            
-            
             
         ###########################  2. DECODER  ##############################
         hidden_dec = last_h_enc       #[b, n_layers, n_hidden_dec]       
