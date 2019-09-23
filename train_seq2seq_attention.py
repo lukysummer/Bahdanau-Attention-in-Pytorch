@@ -66,8 +66,8 @@ def train(train_x,
         for x, s, t, y in get_batches(train_x, train_y, batch_size, seq_len, overlap, train_s, train_t):
         #for x, s, y in train_loader:
              counter += 1
-             #x, s, t, y = torch.from_numpy(x).cuda(), torch.from_numpy(s).cuda(), torch.from_numpy(t).cuda(), torch.from_numpy(y).cuda()
-             x, y = torch.from_numpy(x).cuda(), torch.from_numpy(y).cuda()
+             x, s, t, y = torch.from_numpy(x).cuda(), torch.from_numpy(s).cuda(), torch.from_numpy(t).cuda(), torch.from_numpy(y).cuda()
+             #x, y = torch.from_numpy(x).cuda(), torch.from_numpy(y).cuda()
 
              optimizer.zero_grad()
              
@@ -89,8 +89,8 @@ def train(train_x,
                  #for val_x, val_s, val_y in valid_loader: 
 
                      with torch.no_grad():
-                         #val_x, val_s, val_t, val_y = torch.from_numpy(val_x).cuda(), torch.from_numpy(val_s).cuda(), torch.from_numpy(val_t).cuda(), torch.from_numpy(val_y).cuda()
-                         val_x, val_y = torch.from_numpy(val_x).cuda(), torch.from_numpy(val_y).cuda()
+                         val_x, val_s, val_t, val_y = torch.from_numpy(val_x).cuda(), torch.from_numpy(val_s).cuda(), torch.from_numpy(val_t).cuda(), torch.from_numpy(val_y).cuda()
+                         #val_x, val_y = torch.from_numpy(val_x).cuda(), torch.from_numpy(val_y).cuda()
                          #val_h = tuple([each.data for each in val_h])
     
                          #val_pred, val_h = model(val_x, val_s, val_t, val_h)    
