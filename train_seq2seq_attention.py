@@ -72,7 +72,7 @@ def train(train_x,
              optimizer.zero_grad()
              
              #pred, h = model(x, s, t, h)
-             pred = model(x, y, tf_ratio=args.tf_ratio) 
+             pred = model(x, s, t, y, tf_ratio=args.tf_ratio) 
              
              #loss = criterion(pred, y.float()) + length_penalty(pred)
              loss = criterion(pred, y)#.float()) 
@@ -94,7 +94,7 @@ def train(train_x,
                          #val_h = tuple([each.data for each in val_h])
     
                          #val_pred, val_h = model(val_x, val_s, val_t, val_h)    
-                         val_pred = model(val_x, val_y, tf_ratio=0)
+                         val_pred = model(val_x, val_s, val_t, val_y, tf_ratio=0)
                          
                          # val_loss doesn't need length_penalty cuz we're not training the model
                          val_loss = criterion(val_pred, val_y)#.float()) 
@@ -183,7 +183,11 @@ print("Input dim: ", n_vocab)
 
 ################################# DEFINE MODEL ################################
 model = Seq2Seq(n_vocab = n_vocab, 
-                n_embed_enc = 128, 
+                n_speaker = n_speaker,
+                n_tags = n_tags,
+                n_embed_text = 128, 
+                n_embed_speaker = 64, 
+                n_embed_tags = 128, 
                 n_embed_dec = 2, 
                 n_hidden_enc = 128, 
                 n_hidden_dec = 128, 
@@ -193,7 +197,7 @@ model = Seq2Seq(n_vocab = n_vocab,
 
 model = model.cuda()
 print(f'The model has {count_parameters(model):,} trainable parameters')
-
+'''
 # set single/multi gpu usage
 if not args.gpu is None:  
     torch.cuda.manual_seed(0)
@@ -205,7 +209,7 @@ if not args.gpu is None:
     else:
         gpu = [int(idx) for idx in args.gpu.split(",")]
         model = torch.nn.DataParallel(model, device_ids=gpu)
-       
+'''       
       
 
 ########################### DEFINE LOSS & OPTIMIZER ###########################
