@@ -1,7 +1,7 @@
 import torch
 from torch import nn
 import torch.nn.functional as F
-from Attention import Attention
+from .Attention import Attention
 
 
 class Decoder(nn.Module):
@@ -24,7 +24,8 @@ class Decoder(nn.Module):
         
     
     def forward(self, target, hidden_dec, last_layer_enc):
-        ''' target:         [b] 
+        ''' 
+            target:         [b] 
             hidden_dec:     [b, n_layers, n_hidden_dec]      (1st hidden_dec = encoder's last_h's last layer)
             last_layer_enc: [b, seq_len, n_hidden_enc * 2]
         '''
@@ -39,21 +40,19 @@ class Decoder(nn.Module):
         att_weights = att_weights.unsqueeze(1)   #[b, 1, seq_len]
 
 
-        ##### 3. CALCULATE WEIGHTED SUM #####
+        ###################### 3. CALCULATE WEIGHTED SUM ######################
         weighted_sum = torch.bmm(att_weights, last_layer_enc) #[b, 1, n_hidden_enc*2]
         
         
-        ##### 4. GRU #####
+        ############################# 4. GRU LAYER ############################
         gru_input = torch.cat((embedded_trg, weighted_sum), dim=2) #[b, 1, n_embed + n_hidden_enc*2]
-        #if t==0:
-        #    last_layer_dec, last_h_dec = self.GRU(gru_input, hidden_dec.unsqueeze(0))
-        #else:
+
         last_layer_dec, last_h_dec = self.GRU(gru_input, hidden_dec.permute(1, 0, 2))
         # last_layer_dec: [b, trg_seq_len, n_hidden_dec]
         last_h_dec = last_h_dec.permute(1, 0, 2)  #[b, n_layers, n_hidden_dec]
         
         
-        ##### 5. FINAL FC #####
+        ########################### 5. FINAL FC LAYER #########################
         fc_in = torch.cat((embedded_trg.squeeze(1),           #[b, n_embed]
                            weighted_sum.squeeze(1),           #[b, n_hidden_enc*2]
                            last_layer_dec.squeeze(1)), dim=1) #[b, n_hidden_dec]                           
@@ -61,5 +60,5 @@ class Decoder(nn.Module):
        
         output = self.fc_final(fc_in) #[b, n_output]
         
-        return output, last_h_dec
+        return output, last_h_dec, att_weights
         
