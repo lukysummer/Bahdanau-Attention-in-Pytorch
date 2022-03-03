@@ -27,7 +27,8 @@ class Decoder(nn.Module):
         ''' 
             target:         [b] 
             hidden_dec:     [b, n_layers, n_hidden_dec]      (1st hidden_dec = encoder's last_h's last layer)
-            last_layer_enc: [b, seq_len, n_hidden_enc * 2]
+            last_layer_enc: [b, seq_len, n_hidden_enc * 2]   (* 2 since bi-directional)  
+            --> not to be confused with encoder's last hidden state. last_layer_enc is ALL hidden states (of timesteps 0,1,...,t-1) of the last LAYER.
         '''
         
         ######################## 1. TARGET EMBEDDINGS ######################### 
