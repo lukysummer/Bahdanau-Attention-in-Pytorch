@@ -37,8 +37,8 @@ class Decoder(nn.Module):
 
 
         ################## 2. CALCULATE ATTENTION WEIGHTS #####################      
-        att_weights = self.attention(hidden_dec, last_layer_enc)  #[b, seq_len]
-        att_weights = att_weights.unsqueeze(1)   #[b, 1, seq_len]
+        att_weights = self.attention(hidden_dec, last_layer_enc)  #[b, input_seq_len]
+        att_weights = att_weights.unsqueeze(1)   #[b, 1, input_seq_len]
 
 
         ###################### 3. CALCULATE WEIGHTED SUM ######################
